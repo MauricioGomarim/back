@@ -1,58 +1,43 @@
 // Hash, App Error and SQLite Connection Import
 const AppError = require("../utils/AppError");
 const knex = require("../database/knex");
+const DiskStorage = require("../providers/DiskStorage");
 
 class ProductsController {
   async create(request, response) {
     // Capturing Body Parameters
-    const { title, category, description, brand, tags, price, amount } = request.body;
+    const { title, category, brand, description, size, amount, price } = request.body;
 
-    const titleExist = await knex("product").where({title}).first();
+    let filename = "";
+      // Requesting image filename
+      const imageFileName = request.file?.filename;
 
-    if(titleExist) {
-      throw new AppError("Já existe um produto com o mesmo nome!")
+     // Instanciando diskStorage
+     const diskStorage = new DiskStorage();
+
+    if (imageFileName != null || imageFileName != undefined ) {
+     // Saving image file
+     filename = await diskStorage.saveFile(imageFileName);
     }
 
     const [product_id] = await knex("product").insert({
       title,
       category,
-      description,
       brand,
-      price,
+      description,
+      size,
       amount,
+      price,
+      image: filename
     });
-
-    // Verificando se o produto tem apenas uma tag
-    const temApenasUmaTag = typeof tags === "string";
-
-    let tagsInsert;
-
-    if (product_id) {
-      if (temApenasUmaTag) {
-        tagsInsert = {
-          title: tags,
-          product_id,
-        };
-      } else if (tags.length > 1) {
-        tagsInsert = tags.map((name) => {
-          return {
-            title: name,
-            product_id,
-          };
-        });
-      }
-      await knex("tags").insert(tagsInsert);
-    } else {
-      throw new AppError("Não foi possivel cadastrar esse prato!");
-    }
 
     return response
       .status(201)
-      .json({ category, description, brand, tags, price, amount });
+      .json({ title, category, brand, description, size, amount, price });
   }
 
   async update(request, response) {
-    const { title, category, description, brand, tags, price, amount } = request.body;
+    const { title, category, brand, description, size, amount, price } = request.body;
     const { id } = request.params;
 
     // // Getting the dish data through the informed ID
@@ -60,33 +45,13 @@ class ProductsController {
 
     product.title = title ?? product.title;
     product.category = category ?? product.category;
-    product.description = description ?? product.description;
     product.brand = brand ?? product.brand;
-    product.price = price ?? product.price;
+    product.description = description ?? product.description;
+    product.size = size ?? product.size;
     product.amount = amount ?? product.amount;
+    product.price = price ?? product.price;
 
     await knex("product").where({ id }).update(product);
-
-    // Verificando se o produto tem apenas uma tag
-    const temApenasUmaTag = typeof tags === "string";
-
-    let tagsInsert;
-
-    if (temApenasUmaTag) {
-      tagsInsert = {
-        title: tags,
-        product_id: id,
-      };
-    } else if (tags.length > 1) {
-      tagsInsert = tags.map((name) => {
-        return {
-          title: name,
-          product_id: id,
-        };
-      });
-    }
-    await knex("tags").where({ product_id: id }).delete();
-    await knex("tags").where({ product_id: id }).insert(tagsInsert);
 
     return response.status(201).json();
   }
@@ -96,13 +61,10 @@ class ProductsController {
     const { id } = request.params;
 
     const product = await knex("product").where({ id }).first();
-    const tags = await knex("tags")
-      .where({ product_id: id })
-      .orderBy("title");
+
 
     return response.status(201).json({
-      ...product,
-      tags,
+      product
     });
   }
 
@@ -115,24 +77,11 @@ class ProductsController {
         .whereLike("title", `%${title}%`)
         .orderBy("title");
    
-
-    const tagsProducts = await knex("tags");
-    const productsComTags = product.map((product) => {
-      const tagProduct = tagsProducts.filter(
-        (tag) => tag.product_id === product.id
-      );
-      return {
-        ...product,
-        tags: tagProduct,
-      };
-    });
-    return response.status(200).json(productsComTags);
+    return response.status(200).json(product);
   }
 
   async delete(request, response) {
     const { id } = request.params;
-
-    const product = await knex("product").where({ id }).first();
 
     await knex("product").where({ id }).delete();
 

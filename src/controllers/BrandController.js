@@ -5,15 +5,15 @@ const knex = require("../database/knex");
 class BrandController {
   async create(request, response) {
     // Capturing Body Parameters
-    const { title } = request.body;
+    const { marca: title } = request.body;
+
 
     // // Connection with Database
-    const checkCategoryExist = await knex("brand")
-      .where({ title })
-      .first();
+    const checkBrandExist = await knex("brand")
+      .where({title}).first();
 
-    // Verifications
-    if (checkCategoryExist) {
+    // // Verifications
+    if (checkBrandExist) {
       throw new AppError("Erro: Está marca já está cadastrada!");
     }
 
