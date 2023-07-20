@@ -5,12 +5,13 @@ const knex = require("../database/knex");
 class CategoryController {
   async create(request, response) {
     // Capturing Body Parameters
-    const { title } = request.body;
+    const { categoria: title } = request.body;
 
     // // Connection with Database
     const checkCategoryExist = await knex("categories")
       .where({ title })
       .first();
+
 
     // Verifications
     if (checkCategoryExist) {
@@ -18,7 +19,6 @@ class CategoryController {
     }
 
     await knex("categories").insert({ title });
-
     return response.status(201).json();
   }
 

@@ -58,14 +58,12 @@ class ProductsController {
 
   async show(request, response) {
     // Pegando o id
-    const { id } = request.params;
+     const { id } = request.params;
 
-    const product = await knex("product").where({ id }).first();
+     const product = await knex("product").where({ id }).first();
 
 
-    return response.status(201).json({
-      product
-    });
+    return response.status(201).json(product);
   }
 
   async index(request, response) {
@@ -73,9 +71,18 @@ class ProductsController {
     const { title } = request.query;
 
     
-      let product = await knex("product")
-        .whereLike("title", `%${title}%`)
-        .orderBy("title");
+      let product
+      
+        if(title){
+          product = await knex("product")
+          .whereLike("title", `%${title}%`)
+          .orderBy("title");
+        } else {
+          product = await knex("product")
+          .orderBy("title");
+        }
+
+
    
     return response.status(200).json(product);
   }
