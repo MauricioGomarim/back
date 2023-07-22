@@ -40,8 +40,24 @@ class ProductsController {
     const { title, category, brand, description, size, amount, price } = request.body;
     const { id } = request.params;
 
-    // // Getting the dish data through the informed ID
+
+    // // ?. é um operador channel, que verifica se existe o filename dentro de file
+    const imageFileName = request.file?.filename;
+
+    // Instantiating diskStorage
+    const diskStorage = new DiskStorage();
+
     const product = await knex("product").where({ id }).first();
+
+    // Deleting the old image if a new image is uploaded and saving the new image
+    if (imageFileName != null || imageFileName != undefined ) {
+      await diskStorage.deleteFile(product.image);
+      const filename = await diskStorage.saveFile(imageFileName);
+      product.image = filename ?? product.image;
+    }
+
+    // // Getting the dish data through the informed ID
+
 
     product.title = title ?? product.title;
     product.category = category ?? product.category;
@@ -52,7 +68,6 @@ class ProductsController {
     product.price = price ?? product.price;
 
     await knex("product").where({ id }).update(product);
-
     return response.status(201).json();
   }
 
