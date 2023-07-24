@@ -1,6 +1,7 @@
 exports.up = (knex) =>
   knex.schema.createTable("product", (table) => {
     table.increments("id");
+    table.text("codigo");
     table.text("title");
     table.text("category");
     table.text("brand");

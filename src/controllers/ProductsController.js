@@ -6,7 +6,7 @@ const DiskStorage = require("../providers/DiskStorage");
 class ProductsController {
   async create(request, response) {
     // Capturing Body Parameters
-    const { title, category, brand, description, size, amount, price } = request.body;
+    const { codigo, title, category, brand, description, size, amount, price } = request.body;
 
     let filename = "";
       // Requesting image filename
@@ -20,7 +20,16 @@ class ProductsController {
      filename = await diskStorage.saveFile(imageFileName);
     }
 
+    const checkCodExist = await knex("product").where({ codigo }).first()
+
+    if(checkCodExist){
+      throw new AppError("Já existe um codigo ")
+    }
+
+    
+
     const [product_id] = await knex("product").insert({
+      codigo,
       title,
       category,
       brand,
