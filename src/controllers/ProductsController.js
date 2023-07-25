@@ -100,6 +100,8 @@ class ProductsController {
         if(title){
           product = await knex("product")
           .whereLike("title", `%${title}%`)
+          .orWhereLike("codigo", `%${title}%`)
+          .orWhereLike("id", `%${title}%`)
           .orderBy("title");
         } else {
           product = await knex("product")
