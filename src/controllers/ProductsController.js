@@ -6,27 +6,26 @@ const DiskStorage = require("../providers/DiskStorage");
 class ProductsController {
   async create(request, response) {
     // Capturing Body Parameters
-    const { codigo, title, category, brand, description, size, amount, price } = request.body;
+    const { codigo, title, category, brand, description, size, amount, price } =
+      request.body;
 
     let filename = "";
-      // Requesting image filename
-      const imageFileName = request.file?.filename;
+    // Requesting image filename
+    const imageFileName = request.file?.filename;
 
-     // Instanciando diskStorage
-     const diskStorage = new DiskStorage();
+    // Instanciando diskStorage
+    const diskStorage = new DiskStorage();
 
-    if (imageFileName != null || imageFileName != undefined ) {
-     // Saving image file
-     filename = await diskStorage.saveFile(imageFileName);
+    if (imageFileName != null || imageFileName != undefined) {
+      // Saving image file
+      filename = await diskStorage.saveFile(imageFileName);
     }
 
-    const checkCodExist = await knex("product").where({ codigo }).first()
+    const checkCodExist = await knex("product").where({ codigo }).first();
 
-    if(checkCodExist){
-      throw new AppError("Já existe um codigo ")
+    if (checkCodExist) {
+      throw new AppError("Já existe um codigo ");
     }
-
-    
 
     const [product_id] = await knex("product").insert({
       codigo,
@@ -37,7 +36,7 @@ class ProductsController {
       size,
       amount,
       price,
-      image: filename
+      image: filename,
     });
 
     return response
@@ -46,9 +45,9 @@ class ProductsController {
   }
 
   async update(request, response) {
-    const { title, category, brand, description, size, amount, price } = request.body;
+    const { title, category, brand, description, size, amount, price } =
+      request.body;
     const { id } = request.params;
-
 
     // // ?. é um operador channel, que verifica se existe o filename dentro de file
     const imageFileName = request.file?.filename;
@@ -57,16 +56,16 @@ class ProductsController {
     const diskStorage = new DiskStorage();
 
     const product = await knex("product").where({ id }).first();
-
     // Deleting the old image if a new image is uploaded and saving the new image
-    if (imageFileName != null || imageFileName != undefined ) {
-      await diskStorage.deleteFile(product.image);
+    if (imageFileName != null || imageFileName != undefined) {
+      if (product.image) {
+        await diskStorage.deleteFile(product.image);
+      }
       const filename = await diskStorage.saveFile(imageFileName);
       product.image = filename ?? product.image;
     }
 
     // // Getting the dish data through the informed ID
-
 
     product.title = title ?? product.title;
     product.category = category ?? product.category;
@@ -82,34 +81,35 @@ class ProductsController {
 
   async show(request, response) {
     // Pegando o id
-     const { id } = request.params;
+    const { id } = request.params;
 
-     const product = await knex("product").where({ id }).first();
-
+    const product = await knex("product").where({ id }).first();
 
     return response.status(201).json(product);
   }
 
   async index(request, response) {
     // Capturing Query Parameters
-    const { title } = request.query;
+    const { title, codigo } = request.query;
 
-    
-      let product
-      
-        if(title){
-          product = await knex("product")
-          .whereLike("title", `%${title}%`)
-          .orWhereLike("codigo", `%${title}%`)
-          .orWhereLike("id", `%${title}%`)
-          .orderBy("title");
-        } else {
-          product = await knex("product")
-          .orderBy("title");
-        }
+    let product;
 
+    if (codigo) {
+      product = await knex("product")
+      .where("codigo", codigo)
+    }
 
-   
+    if (title) {
+      product = await knex("product")
+        .whereLike("title", `%${title}%`)
+        .orWhereLike("codigo", `%${title}%`)
+        .orWhereLike("id", `%${title}%`)
+        .orderBy("title");
+    } 
+    else if(codigo == undefined){
+      product = await knex("product").orderBy("title");
+    }
+
     return response.status(200).json(product);
   }
 
