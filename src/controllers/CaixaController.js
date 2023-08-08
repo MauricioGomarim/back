@@ -106,9 +106,7 @@ class ProductsController {
         .orWhereLike("id", `%${title}%`)
         .orderBy("title");
     } 
-    else if(codigo == undefined){
-      product = await knex("product").orderBy("title");
-    }
+
 
     return response.status(200).json(product);
   }

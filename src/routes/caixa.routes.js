@@ -20,4 +20,4 @@ caixaRoutes.get("/:id", caixaController.show);
 
 
 
-module.exports = productsRoutes;
+module.exports = caixaRoutes;

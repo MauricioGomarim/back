@@ -6,6 +6,8 @@ const usersProducts = require("./products.routes");
 const usersCategories = require("./category.routes");
 const usersBrands = require("./brand.routes");
 const sessionsRoutes = require("./sessions.routes");
+const caixaRoutes = require("./caixa.routes");
+
 
 
 
@@ -16,7 +18,8 @@ const routes = Router();
 
 // Aplicando as rotas //
 routes.use("/users", usersRouter);
-routes.use("/products", usersProducts);
+routes.use("/products", usersProducts)
+routes.use("/caixa", caixaRoutes);
 routes.use("/category", usersCategories);
 routes.use("/brand", usersBrands);
 routes.use("/sessions", sessionsRoutes);
