@@ -14,7 +14,7 @@ class BrandController {
 
     // // Verifications
     if (checkBrandExist) {
-      throw new AppError("Erro: Está marca já está cadastrada!");
+      throw new AppError("Está marca já está cadastrada!");
     }
 
     await knex("brand").insert({ title });

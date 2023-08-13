@@ -5,7 +5,9 @@ const knex = require("../database/knex");
 class CategoryController {
   async create(request, response) {
     // Capturing Body Parameters
-    const { categoria: title } = request.body;
+    const { category: title } = request.body;  
+
+   
 
     // // Connection with Database
     const checkCategoryExist = await knex("categories")

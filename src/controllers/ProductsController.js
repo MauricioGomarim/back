@@ -45,9 +45,12 @@ class ProductsController {
   }
 
   async update(request, response) {
-    const { title, category, brand, description, size, amount, price } =
+    const { codigo, title, category, brand, description, size, amount, price } =
       request.body;
     const { id } = request.params;
+
+
+   
 
     // // ?. é um operador channel, que verifica se existe o filename dentro de file
     const imageFileName = request.file?.filename;
@@ -66,7 +69,7 @@ class ProductsController {
     }
 
     // // Getting the dish data through the informed ID
-
+    product.codigo = codigo ?? product.codigo;
     product.title = title ?? product.title;
     product.category = category ?? product.category;
     product.brand = brand ?? product.brand;
