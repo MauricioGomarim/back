@@ -2,6 +2,7 @@ const { Router } = require('express');
 
 // Importando as rotas //
 const usersRouter = require("./users.routes");
+const clientRouter = require("./client.routes");
 const usersProducts = require("./products.routes");
 const usersCategories = require("./category.routes");
 const usersBrands = require("./brand.routes");
@@ -23,6 +24,8 @@ routes.use("/caixa", caixaRoutes);
 routes.use("/category", usersCategories);
 routes.use("/brand", usersBrands);
 routes.use("/sessions", sessionsRoutes);
+routes.use("/client", clientRouter);
+
 
 
 
