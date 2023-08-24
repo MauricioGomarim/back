@@ -42,9 +42,9 @@ class BrandController {
   }
 
   async update(request, response) {
-    const { title } = request.body;
+    const { marca: title } = request.body;
     const { id } = request.params;
-
+    console.log(title)
     const brand = await knex("brand").where({ id }).first();
 
     brand.title = title ?? brand.title;
