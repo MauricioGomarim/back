@@ -8,6 +8,9 @@ const usersCategories = require("./category.routes");
 const usersBrands = require("./brand.routes");
 const sessionsRoutes = require("./sessions.routes");
 const caixaRoutes = require("./caixa.routes");
+const checkoutRoutes = require("./checkout.routes");
+const saidaRoutes = require("./saida.produtos.routes");
+
 
 
 
@@ -25,6 +28,10 @@ routes.use("/category", usersCategories);
 routes.use("/brand", usersBrands);
 routes.use("/sessions", sessionsRoutes);
 routes.use("/client", clientRouter);
+routes.use("/checkout", checkoutRoutes);
+routes.use("/saida-produtos", saidaRoutes);
+
+
 
 
 

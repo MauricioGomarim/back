@@ -25,14 +25,14 @@ class CategoryController {
   }
 
   async update(request, response) {
-    const { title } = request.body;
+    const { categoria: title } = request.body;
     const { id } = request.params;
+    console.log(title)
+    const categoria = await knex("categories").where({ id }).first();
 
-    const category = await knex("categoies").where({ id }).first();
+    categoria.title = title ?? categoria.title;
 
-    category.title = title ?? category.title;
-
-    await knex("categoies").where({ id }).update(category);
+    await knex("categories").where({ id }).update(categoria);
 
     return response.status(201).json();
   }
