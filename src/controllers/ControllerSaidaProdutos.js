@@ -56,6 +56,14 @@ class ControllerSaidaProdutos {
 
     return response.status(200).json(client);
   }
+
+  async show(request, response) {
+    const { id } = request.params;
+
+    const saida = await knex("historicoSaidaProdutos").where({ id }).first();
+
+    return response.status(201).json(saida);
+  }
 }
 
 module.exports = ControllerSaidaProdutos;

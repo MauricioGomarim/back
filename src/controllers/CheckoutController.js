@@ -6,11 +6,12 @@ const DiskStorage = require("../providers/DiskStorage");
 class CheckoutController {
   async create(request, response) {
     // Capturing Body Parameters
-    const { client, produtos, total } = request.body;
+    const { client, produtos, total, tipo_pagamento} = request.body;
 
     const [id_pedido_finalizado] = await knex("historicoCompra").insert({
       id_client: client.id,
-      valor: total
+      valor: total,
+      tipo_pagamento
     });
 
     const produto = produtos.map((produto) => {
@@ -25,7 +26,7 @@ class CheckoutController {
 
     const [product_id] = await knex("historicoSaidaProdutos").insert(produto);
 
-    return response.status(201).json(produtos);
+    return response.status(201).json(total);
   }
 
   async update(request, response) {

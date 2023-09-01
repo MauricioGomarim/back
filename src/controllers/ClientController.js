@@ -14,7 +14,6 @@ class ClientesController {
 
     // Verifications
     if (checkUserExists) {
-      console.log(checkUserExists)
       throw new AppError("Este cliente já está cadastrado!");
       
     }

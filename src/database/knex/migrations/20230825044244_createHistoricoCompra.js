@@ -3,6 +3,7 @@ exports.up = (knex) =>
     table.increments("id");
     table.integer("id_client").references("id").inTable("clientes");
     table.integer("valor");
+    table.text("tipo_pagamento");
     table.timestamp("created_at").default(knex.fn.now());
     table.timestamp("updated_at").default(knex.fn.now());
   });

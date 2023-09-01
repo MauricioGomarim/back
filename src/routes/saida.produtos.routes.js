@@ -7,6 +7,8 @@ const saidaRoutes = Router();
 
 
 saidaRoutes.get("/", controllerSaidaProdutos.index);
+saidaRoutes.get("/:id", controllerSaidaProdutos.show);
+
 
 
 

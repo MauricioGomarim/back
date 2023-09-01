@@ -4,7 +4,7 @@ const knex = require("../database/knex");
 
 const AppError = require("../utils/AppError");
 
-class ClientesController {
+class ControllerProdutosFinalizados {
   async create(request, response) {
     // // Capturing Body Parameters
     const { name, whatsapp, cpf, bairro, endereco, numero } = request.body;
@@ -14,9 +14,8 @@ class ClientesController {
 
     // Verifications
     if (checkUserExists) {
-      console.log(checkUserExists)
+      console.log(checkUserExists);
       throw new AppError("Este cliente já está cadastrado!");
-      
     }
 
     await knex("clientes").insert({
@@ -57,16 +56,14 @@ class ClientesController {
     client.numero = numero ?? client.numero;
 
     // Inserindo dados no banco
-    await knex("clientes")
-      .where({ id })
-      .update({
-        name: client.name,
-        whatsapp: client.whatsapp,
-        cpf: client.cpf,
-        bairro: client.bairro,
-        endereco: client.endereco,
-        numero: client.numero,
-      });
+    await knex("clientes").where({ id }).update({
+      name: client.name,
+      whatsapp: client.whatsapp,
+      cpf: client.cpf,
+      bairro: client.bairro,
+      endereco: client.endereco,
+      numero: client.numero,
+    });
 
     return response.status(201).json();
   }
@@ -86,18 +83,32 @@ class ClientesController {
 
     let client;
 
-
     if (title) {
       client = await knex("clientes")
-      .whereLike("name", `%${title}%`)
-      .orWhereLike("cpf", `%${title}%`)
-      .orderBy("id")
+        .whereLike("name", `%${title}%`)
+        .orWhereLike("cpf", `%${title}%`)
+        .select(
+          "clientes.name",
+          "hc.id",
+          "hc.valor",
+          "hc.tipo_pagamento",
+          "hc.created_at as data"
+        )
+        .innerJoin("historicoCompra as hc", "clientes.id", "hc.id_client")
+        .orderBy("data");
 
-      console.log(title)
-    }
-
-    else if(title == "" || title == undefined ){
-      client = await knex("clientes").orderBy("id");
+      console.log(title);
+    } else if (title == "" || title == undefined) {
+      client = await knex("clientes")
+        .select(
+          "clientes.name",
+          "hc.id",
+          "hc.valor",
+          "hc.tipo_pagamento",
+          "hc.created_at as data"
+        )
+        .innerJoin("historicoCompra as hc", "clientes.id", "hc.id_client")
+        .orderBy("data", "desc");
     }
 
     return response.status(200).json(client);
@@ -112,4 +123,4 @@ class ClientesController {
   }
 }
 
-module.exports = ClientesController;
+module.exports = ControllerProdutosFinalizados;

@@ -10,6 +10,8 @@ const sessionsRoutes = require("./sessions.routes");
 const caixaRoutes = require("./caixa.routes");
 const checkoutRoutes = require("./checkout.routes");
 const saidaRoutes = require("./saida.produtos.routes");
+const pedidosFinalizadosRoutes = require("./pedidos.finalizados.routes");
+
 
 
 
@@ -30,6 +32,8 @@ routes.use("/sessions", sessionsRoutes);
 routes.use("/client", clientRouter);
 routes.use("/checkout", checkoutRoutes);
 routes.use("/saida-produtos", saidaRoutes);
+routes.use("/pedidos-finalizados", pedidosFinalizadosRoutes);
+
 
 
 
