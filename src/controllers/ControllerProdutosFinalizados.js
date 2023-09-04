@@ -76,7 +76,7 @@ class ControllerProdutosFinalizados {
       .where({ "hc.id": id })
       .select("c.name", "hc.valor", "hc.tipo_pagamento", "hc.created_at as hora")
       .innerJoin("historicoCompra as hc", "hc.id_client", "c.id")
-      .first();
+      .first()
 
 
 
