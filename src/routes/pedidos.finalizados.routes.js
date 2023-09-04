@@ -7,6 +7,8 @@ const pedidosFinalizadosRoutes = Router();
 
 
 pedidosFinalizadosRoutes.get("/", controllerProdutosFinalizados.index);
+pedidosFinalizadosRoutes.get("/:id", controllerProdutosFinalizados.show);
+
 
 
 

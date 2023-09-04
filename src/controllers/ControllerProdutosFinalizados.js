@@ -72,9 +72,18 @@ class ControllerProdutosFinalizados {
     // Pegando o id
     const { id } = request.params;
 
-    const client = await knex("clientes").where({ id }).first();
+    const dadosPedidoFinalizado = await knex("clientes as c")
+      .where({ "hc.id": id })
+      .select("c.name", "hc.valor", "hc.tipo_pagamento", "hc.created_at as hora")
+      .innerJoin("historicoCompra as hc", "hc.id_client", "c.id")
+      .first();
 
-    return response.status(201).json(client);
+
+
+    console.log(dadosPedidoFinalizado)
+
+
+    return response.status(201).json(dadosPedidoFinalizado);
   }
 
   async index(request, response) {
