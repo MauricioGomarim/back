@@ -11,9 +11,9 @@ const usersRoutes = Router();
 // const upload = multer(uploadConfig.MULTER)
 
 usersRoutes.post('/', usersController.create);
-usersRoutes.put('/', ensureAuthenticated, usersController.update);
+usersRoutes.put('/', ensureAuthenticated, usersController.update)
 
-
+teste
 
 
 module.exports = usersRoutes;
